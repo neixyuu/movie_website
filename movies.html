@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -480,7 +480,7 @@
       <a href="#contact">Contact Us</a>
     </nav>
     <div class="header-right">
-      <button class="search-btn" aria-label="Cari"><i class="fas fa-search"></i></button>
+      <button class="search-btn" aria-label="Search"><i class="fas fa-search"></i></button>
       <div class="user-info">
         <div class="user-avatar">JG</div>
         <span>Jane Doe muehehe</span>
@@ -489,24 +489,24 @@
   </header>
 
   <main class="page-container">
-    <h1 class="page-title">Semua Film</h1>
+    <h1 class="page-title">All Movies</h1>
 
     <div class="toolbar">
       <div class="search-wrap">
         <i class="fas fa-search"></i>
-        <input type="text" id="searchInput" placeholder="Cari film..." autocomplete="off">
+        <input type="text" id="searchInput" placeholder="Search movies..." autocomplete="off">
       </div>
       <select class="genre-select" id="genreSelect">
-        <option value="">Semua Genre</option>
+        <option value="">All Genres</option>
       </select>
     </div>
 
     <div class="movies-grid" id="moviesGrid">
-      <div class="loading-grid spinner">Memuat film...</div>
+      <div class="loading-grid spinner">Loading movies...</div>
     </div>
 
     <div class="load-more-wrap" id="loadMoreWrap" style="display: none;">
-      <button type="button" class="load-more-btn" id="loadMoreBtn">Muat Lebih Banyak</button>
+      <button type="button" class="load-more-btn" id="loadMoreBtn">Load More</button>
     </div>
   </main>
 
@@ -514,14 +514,14 @@
   <div class="modal-overlay" id="detailModal">
     <div class="detail-modal">
       <div class="detail-modal-backdrop" id="detailBackdrop"></div>
-      <button type="button" class="detail-modal-close" id="closeDetailModal" aria-label="Tutup">&times;</button>
+      <button type="button" class="detail-modal-close" id="closeDetailModal" aria-label="Close">&times;</button>
       <div class="detail-modal-body">
         <h1 id="detailTitle">-</h1>
         <div class="detail-meta" id="detailMeta"></div>
         <p class="detail-overview" id="detailOverview">-</p>
         <p class="detail-section-title">Trailers</p>
         <button type="button" class="play-trailer-btn" id="detailPlayTrailer" style="display: none;">
-          <i class="fas fa-play"></i> Putar Trailer
+          <i class="fas fa-play"></i> Play Trailer
         </button>
         <div class="trailers-row" id="detailTrailersRow"></div>
         <p class="detail-section-title">Review</p>
@@ -558,7 +558,7 @@
 
     async function tmdb(path) {
       const sep = path.includes('?') ? '&' : '?';
-      const url = `${TMDB_BASE}${path}${sep}language=id-ID`;
+      const url = `${TMDB_BASE}${path}${sep}language=en-US`;
       const res = await fetch(url, TMDB_OPTIONS);
       if (!res.ok) throw new Error('TMDB request failed');
       return res.json();
@@ -568,7 +568,7 @@
       if (!mins) return '-';
       const h = Math.floor(mins / 60);
       const m = mins % 60;
-      return h ? `${h} jam ${m} mnt` : `${m} mnt`;
+      return h ? `${h} hr ${m} min` : `${m} min`;
     }
 
     function escapeHtml(s) {
@@ -624,7 +624,7 @@
     async function fetchMovies(page = 1, append = false) {
       const grid = document.getElementById('moviesGrid');
       if (!append) {
-        grid.innerHTML = '<div class="loading-grid spinner">Memuat film...</div>';
+        grid.innerHTML = '<div class="loading-grid spinner">Loading movies...</div>';
       }
 
       try {
@@ -675,7 +675,7 @@
           loadMoreWrap.style.display = 'none';
         }
       } catch (e) {
-        grid.innerHTML = '<p class="error-msg">Gagal memuat film. Pastikan token TMDB masih valid.</p>';
+        grid.innerHTML = '<p class="error-msg">Failed to load movies. Please check your TMDB token.</p>';
         document.getElementById('loadMoreWrap').style.display = 'none';
       }
     }
@@ -686,13 +686,13 @@
 
       document.getElementById('detailBackdrop').style.backgroundImage = `url(${getImgUrl(detail.backdrop_path, 'w780')})`;
       document.getElementById('detailTitle').textContent = detail.title || '-';
-      document.getElementById('detailOverview').textContent = detail.overview || 'Tidak ada deskripsi.';
+      document.getElementById('detailOverview').textContent = detail.overview || 'No description available.';
 
       const metaHtml = [
         `<span><strong>Genre:</strong> ${(detail.genres || []).map(g => g.name).join(', ') || '-'}</span>`,
-        `<span><strong>Durasi:</strong> ${formatRuntime(detail.runtime)}</span>`,
+        `<span><strong>Duration:</strong> ${formatRuntime(detail.runtime)}</span>`,
         `<span class="rating"><strong>Rating:</strong> ${(detail.vote_average != null ? detail.vote_average.toFixed(1) : '-')}</span>`,
-        `<span><strong>Rilis:</strong> ${(detail.release_date || '-').slice(0, 4)}</span>`
+        `<span><strong>Release:</strong> ${(detail.release_date || '-').slice(0, 4)}</span>`
       ].join('');
       document.getElementById('detailMeta').innerHTML = metaHtml;
 
@@ -712,7 +712,7 @@
         });
       } else {
         playBtn.style.display = 'none';
-        trailersRow.innerHTML = '<span style="color: var(--text-muted);">Tidak ada trailer.</span>';
+        trailersRow.innerHTML = '<span style="color: var(--text-muted);">No trailers available.</span>';
       }
 
       const reviews = detail.reviews?.results || [];
@@ -725,7 +725,7 @@
           </div>`
         ).join('');
       } else {
-        reviewsList.innerHTML = '<span style="color: var(--text-muted);">Belum ada review.</span>';
+        reviewsList.innerHTML = '<span style="color: var(--text-muted);">No reviews yet.</span>';
       }
 
       modal.classList.add('active');

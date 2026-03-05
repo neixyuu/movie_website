@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -496,7 +496,7 @@
       <a href="#contact">Contact Us</a>
     </nav>
     <div class="header-right">
-      <button class="search-btn" aria-label="Cari"><i class="fas fa-search"></i></button>
+      <button class="search-btn" aria-label="Search"><i class="fas fa-search"></i></button>
       <div class="user-info">
         <div class="user-avatar">JG</div>
         <span>Jane Doe muehehe</span>
@@ -510,16 +510,16 @@
       <section class="hero" id="hero">
         <div class="hero-backdrop" id="heroBackdrop"></div>
         <div class="hero-content">
-          <div class="loading spinner" id="heroLoading">Memuat film...</div>
+          <div class="loading spinner" id="heroLoading">Loading movie...</div>
           <div id="heroData" style="display: none;">
             <h1 id="heroTitle">-</h1>
             <p class="hero-overview" id="heroOverview">-</p>
             <div class="hero-meta">
               <span><strong>Genre:</strong> <span id="heroGenre">-</span></span>
-              <span><strong>Durasi:</strong> <span id="heroDuration">-</span></span>
+              <span><strong>Duration:</strong> <span id="heroDuration">-</span></span>
               <span class="rating"><strong>Rating:</strong> <span id="heroRating">-</span></span>
             </div>
-            <button type="button" class="play-trailer-btn" id="playTrailerBtn" title="Putar trailer">
+            <button type="button" class="play-trailer-btn" id="playTrailerBtn" title="Play trailer">
               <i class="fas fa-play"></i>
             </button>
             <p class="trailers-label">Trailers</p>
@@ -539,7 +539,7 @@
           <a href="#watch">View More</a>
         </div>
         <div class="cards-grid" id="lastWatchGrid">
-          <div class="loading spinner">Memuat...</div>
+          <div class="loading spinner">Loading...</div>
         </div>
       </section>
     </div>
@@ -551,7 +551,7 @@
           <a href="#movies">View More</a>
         </div>
         <div class="cards-grid" id="topMoviesGrid">
-          <div class="loading spinner">Memuat...</div>
+          <div class="loading spinner">Loading...</div>
         </div>
       </div>
       <div class="sidebar-section">
@@ -560,7 +560,7 @@
           <a href="#tv">View More</a>
         </div>
         <div class="cards-grid" id="topTvGrid">
-          <div class="loading spinner">Memuat...</div>
+          <div class="loading spinner">Loading...</div>
         </div>
       </div>
     </aside>
@@ -569,7 +569,7 @@
   <!-- Modal trailer YouTube -->
   <div class="modal-overlay" id="trailerModal">
     <div class="modal-content">
-      <button type="button" class="modal-close" id="closeModal" aria-label="Tutup">&times;</button>
+      <button type="button" class="modal-close" id="closeModal" aria-label="Close">&times;</button>
       <div class="video-wrapper">
         <iframe id="trailerIframe" src="" title="Trailer" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
       </div>
@@ -595,7 +595,7 @@
 
     async function tmdb(path) {
       const sep = path.includes('?') ? '&' : '?';
-      const url = `${TMDB_BASE}${path}${sep}language=id-ID`;
+      const url = `${TMDB_BASE}${path}${sep}language=en-US`;
       const res = await fetch(url, TMDB_OPTIONS);
       if (!res.ok) throw new Error('TMDB request failed');
       return res.json();
@@ -617,7 +617,7 @@
         const data = await tmdb('/trending/movie/week');
         const movie = data.results?.[0];
         if (!movie) {
-          heroLoading.textContent = 'Tidak ada data film.';
+          heroLoading.textContent = 'No movie data.';
           return;
         }
         const detail = await tmdb(`/movie/${movie.id}?append_to_response=videos,reviews`);
@@ -625,7 +625,7 @@
         heroData.style.display = 'block';
 
         document.getElementById('heroTitle').textContent = detail.title;
-        document.getElementById('heroOverview').textContent = detail.overview || 'Tidak ada deskripsi.';
+        document.getElementById('heroOverview').textContent = detail.overview || 'No description available.';
         document.getElementById('heroGenre').textContent = detail.genres?.map(g => g.name).join(', ') || '-';
         document.getElementById('heroDuration').textContent = formatRuntime(detail.runtime);
         document.getElementById('heroRating').textContent = detail.vote_average?.toFixed(1) || '-';
@@ -660,7 +660,7 @@
           ).join('');
         }
       } catch (e) {
-        heroLoading.textContent = 'Gagal memuat. Pastikan Bearer token TMDB di TMDB_OPTIONS masih valid.';
+        heroLoading.textContent = 'Failed to load. Please check your TMDB Bearer token in TMDB_OPTIONS.';
         heroLoading.classList.add('error-msg');
       }
     }
@@ -717,7 +717,7 @@
         el.innerHTML = list.map(m => renderCard({ ...m, genre_ids: m.genre_ids }, genreMap[m.genre_ids?.[0]] || 'Film')).join('');
         bindCardClicks(el);
       } catch (e) {
-        el.innerHTML = '<p class="error-msg">Gagal memuat. Cek API key.</p>';
+        el.innerHTML = '<p class="error-msg">Failed to load. Check API key.</p>';
       }
     }
 
@@ -740,7 +740,7 @@
         el.innerHTML = list.map(m => renderCard({ ...m, genre_ids: m.genre_ids }, genreMap[m.genre_ids?.[0]] || 'Film')).join('');
         bindCardClicks(el);
       } catch (e) {
-        el.innerHTML = '<p class="error-msg">Gagal memuat.</p>';
+        el.innerHTML = '<p class="error-msg">Failed to load.</p>';
       }
     }
 
@@ -755,7 +755,7 @@
         el.innerHTML = list.map(t => renderCard({ ...t, genre_ids: t.genre_ids }, genreMap[t.genre_ids?.[0]] || 'TV')).join('');
         bindCardClicks(el);
       } catch (e) {
-        el.innerHTML = '<p class="error-msg">Gagal memuat.</p>';
+        el.innerHTML = '<p class="error-msg">Failed to load.</p>';
       }
     }
 
@@ -777,7 +777,7 @@
       const heroData = document.getElementById('heroData');
       heroBackdrop.style.backgroundImage = `url(${getImgUrl(detail.backdrop_path, 'w780')})`;
       document.getElementById('heroTitle').textContent = detail.title || detail.name;
-      document.getElementById('heroOverview').textContent = detail.overview || 'Tidak ada deskripsi.';
+      document.getElementById('heroOverview').textContent = detail.overview || 'No description available.';
       document.getElementById('heroGenre').textContent = detail.genres?.map(g => g.name).join(', ') || '-';
       document.getElementById('heroDuration').textContent = detail.runtime ? formatRuntime(detail.runtime) : (detail.episode_run_time?.[0] ? `${detail.episode_run_time[0]} mins` : '-');
       document.getElementById('heroRating').textContent = detail.vote_average?.toFixed(1) || '-';
